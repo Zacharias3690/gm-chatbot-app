@@ -2,16 +2,19 @@
 export const Colors = {
     light: {
         text: '#000000',
-        onPrimaryText: "#DEDEDE",
+        onPrimaryText: "#FFFFFF",
         primary: "#1b3d74",
-        white: "#FFFFFF",
-        background: "#DDDDDD",
+        messageBackground: "#DDDDDD",
+        headerBackground: "#1b3d74",
+        headerText: "#FFFFFF",
         border: "#000000"
     },
     dark: {
         text: "#DEDEDE",
         onPrimaryText: "#DEDEDE",
-        background: "#222222",
+        messageBackground: "#222222",
+        headerBackground: "#1b3d74",
+        headerText: "#DEDEDE",
         primary: "#1b3d74",
         border: "#AAAAAA"
     }

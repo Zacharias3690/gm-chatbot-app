@@ -6,13 +6,13 @@ import {useThemeColor} from "@/app/hooks/useThemeColor";
 // @ts-ignore
 import SyntaxHighlighter from 'react-native-syntax-highlighter';
 // @ts-ignore
-import {atelierDuneDark, atelierDuneLight} from 'react-syntax-highlighter/styles/hljs';
+import {atelierDuneDark, atelierDuneLight} from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 
 const Message: FC<{ message: MessageT }> = ({message}) => {
     const theme = useColorScheme();
     const textColor = useThemeColor('text');
-    const backgroundColor = useThemeColor('background');
+    const backgroundColor = useThemeColor('messageBackground');
 
     const markdownRules = {
         fence: (node: any) => {

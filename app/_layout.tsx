@@ -7,17 +7,19 @@ import Home from "@/app/index";
 
 export default function RootLayout() {
     const colorScheme = useColorScheme();
-    const backgroundColor = useThemeColor('background');
+    const backgroundColor = useThemeColor('headerBackground');
+    const textColor = useThemeColor('headerText');
 
     return (
         <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
             <StatusBar style={"auto"}/>
             <Stack
                 screenOptions={{
-                headerStyle: {
-                    backgroundColor
-                }
-            }}>
+                    headerTintColor: textColor,
+                    headerStyle: {
+                        backgroundColor
+                    }
+                }}>
             </Stack>
         </ThemeProvider>
     );
