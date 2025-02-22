@@ -1,4 +1,4 @@
-import {SafeAreaView, ScrollView, View} from "react-native";
+import {SafeAreaView, ScrollView, View, Text} from "react-native";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {generateGuid} from "@/app/helpers/generateGuid";
 import {MessageT, MessageAuthor, useMessages} from "@/app/hooks/useMessages";
@@ -8,19 +8,23 @@ import Message from "@/app/components/Message/Message";
 import ThemedTextInput from "@/app/components/common/ThemedTextInput";
 import {Stack} from "expo-router";
 import Feather from '@expo/vector-icons/Feather'
+import {Header, HeaderTitle} from "@react-navigation/elements";
+import {set} from "immutable";
 
 function Home() {
     const [text, setText] = useState<string>('');
     const {messages, upsertMessage, clearMessages} = useMessages();
     const [chatId, setChatId] = useState<string>();
-    const socket = useMemo(() => io('ws://35.193.110.152'), []);
+    const socket = useMemo(() => io('ws://35.193.110.152', { transports: ['websocket'], query: { b64: 1 } }), []);
     const scrollView = useRef<ScrollView>(null);
+    const [isConnected, setConnected] = useState(false);
 
     useEffect(() => {
         resetConversation();
 
         socket.on('connect', () => {
             console.log('Connected to server');
+            setConnected(true);
         });
 
         socket.on('receive_message', (data: MessageT) => {
@@ -30,14 +34,17 @@ function Home() {
 
         socket.on('disconnect', () => {
             console.log('Disconnected from server');
+            setConnected(false);
         });
 
         socket.on('connect_error', (err) => {
             console.log('Error connecting to server', err);
+            setConnected(false);
         })
 
         return () => {
             socket.disconnect();
+            socket.removeAllListeners();
         }
     }, []);
 
@@ -71,12 +78,25 @@ function Home() {
             <Stack.Screen
                 name="home"
                 options={{
-                    title: "GameMaster Bot",
+                    headerTitle: () => {
+                        return (
+                            <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+                                <HeaderTitle>Game Master</HeaderTitle>
+                                <View style={{
+                                    width: 12,
+                                    height: 12,
+                                    marginLeft: 8,
+                                    backgroundColor: isConnected ? 'green' : 'red',
+                                    borderRadius: '50%'
+                                }}/>
+                            </View>
+                        )
+                    },
                     headerRight: () => (
                         <Feather.Button
                             name={"edit"}
                             backgroundColor={'transparent'}
-                            onPress={() => {resetConversation()}}/>
+                            onPressOut={resetConversation}/>
                     )
                 }}
             />

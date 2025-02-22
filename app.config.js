@@ -2,7 +2,7 @@ const IS_DEV = process.env.APP_VARIANT === 'development';
 
 export default {
   "expo": {
-    "name": IS_DEV ? "Game Master (dev)" : "Game Master",
+    "name": IS_DEV ? "GM (dev)" : "Game Master",
     "slug": "gm-chatbot-app",
     "version": "1.0.0",
     "orientation": "portrait",
