@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "gm-chatbot-app",
+    "name": "Game Master",
     "slug": "gm-chatbot-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -13,25 +13,25 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/gmbot-adaptive-foreground.png",
+        "backgroundColor": "#495E6A"
       },
       "package": "com.zacharias3690.gmchatbotapp"
     },
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/gmbot-favicon.png"
     },
     "plugins": [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/gmbot-adaptive-foreground.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#495E6A"
         }
       ]
     ],

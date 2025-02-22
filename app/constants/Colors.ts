@@ -3,9 +3,9 @@ export const Colors = {
     light: {
         text: '#000000',
         onPrimaryText: "#FFFFFF",
-        primary: "#1b3d74",
+        primary: "#516971",
         messageBackground: "#DDDDDD",
-        headerBackground: "#1b3d74",
+        headerBackground: "#495E6A",
         headerText: "#FFFFFF",
         border: "#000000"
     },
@@ -13,9 +13,11 @@ export const Colors = {
         text: "#DEDEDE",
         onPrimaryText: "#DEDEDE",
         messageBackground: "#222222",
-        headerBackground: "#1b3d74",
+        headerBackground: "#495E6A",
         headerText: "#DEDEDE",
-        primary: "#1b3d74",
+        primary: "#516971",
         border: "#AAAAAA"
     }
 }
+
+export default Colors;
