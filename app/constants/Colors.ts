@@ -7,7 +7,8 @@ export const Colors = {
         messageBackground: "#DDDDDD",
         headerBackground: "#495E6A",
         headerText: "#FFFFFF",
-        border: "#000000"
+        border: "#000000",
+        placeholderText: "#999"
     },
     dark: {
         text: "#DEDEDE",
@@ -16,7 +17,8 @@ export const Colors = {
         headerBackground: "#495E6A",
         headerText: "#DEDEDE",
         primary: "#516971",
-        border: "#AAAAAA"
+        border: "#AAAAAA",
+        placeholderText: "#565656"
     }
 }
 

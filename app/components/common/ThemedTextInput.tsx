@@ -4,10 +4,12 @@ import {useThemeColor} from "@/app/hooks/useThemeColor";
 const ThemedTextInput = (props: TextInputProps) => {
     const textColor = useThemeColor('text');
     const borderColor = useThemeColor('border');
+    const placeholderColor = useThemeColor('placeholderText');
 
     return (
         <TextInput
             {...props}
+            placeholderTextColor={placeholderColor}
             style={{
                 ...styles.textInput,
                 color: textColor,
