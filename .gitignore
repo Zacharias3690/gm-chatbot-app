@@ -39,3 +39,4 @@ app-example
 
 .idea
 .env.local
+build-*.apk
