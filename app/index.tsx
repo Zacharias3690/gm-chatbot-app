@@ -11,10 +11,8 @@ import Feather from '@expo/vector-icons/Feather'
 import {Header, HeaderTitle} from "@react-navigation/elements";
 import {set} from "immutable";
 import {useThemeColor} from "@/app/hooks/useThemeColor";
-import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
 import Toast from 'react-native-toast-message';
-import {Platform} from "react-native";
+import {usePdfUpload} from "@/app/hooks/usePdfUpload";
 
 function Home() {
     const [text, setText] = useState<string>('');
@@ -24,6 +22,7 @@ function Home() {
     const scrollView = useRef<ScrollView>(null);
     const headerText = useThemeColor('headerText');
     const [isConnected, setConnected] = useState(false);
+    const { uploadPdf } = usePdfUpload();
 
     useEffect(() => {
         resetConversation();
@@ -74,75 +73,29 @@ function Home() {
     }
 
     async function handlePdfUpload() {
-        try {
-            const result = await DocumentPicker.getDocumentAsync({
-                type: 'application/pdf',
-                copyToCacheDirectory: true
-            });
-            
-            if (result.assets && result.assets.length > 0) {
-                const file = result.assets[0];
+        await uploadPdf({
+            onStart: (filename) => {
                 Toast.show({
                     type: 'info',
                     text1: 'Uploading PDF',
-                    text2: file.name,
+                    text2: filename,
                 });
-
-                // Create form data
-                const formData = new FormData();
-                
-                // For web, we need to get the actual file
-                if (Platform.OS === 'web') {
-                    // Convert base64 to blob
-                    const response = await fetch(file.uri); 
-                    const blob = await response.blob();
-                    formData.append('file', blob, file.name);
-                } else {
-                    formData.append('file', {
-                        uri: Platform.OS === 'ios' ? file.uri.replace('file://', '') : file.uri,
-                        type: 'application/pdf',
-                        name: file.name,
-                    } as any);
-                }
-
-                try {
-                    const response = await fetch('http://64.23.133.29/upload', {
-                        method: 'POST',
-                        body: formData,
-                    });
-
-                    if (response.ok) {
-                        Toast.show({
-                            type: 'success',
-                            text1: 'Upload Complete',
-                            text2: file.name,
-                        });
-                    } else {
-                        const errorText = await response.text();
-                        console.error('Upload failed:', errorText);
-                        Toast.show({
-                            type: 'error',
-                            text1: 'Upload Failed',
-                            text2: file.name,
-                        });
-                    }
-                } catch (error) {
-                    console.error('Upload error:', error);
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Upload Error',
-                        text2: 'Failed to upload file',
-                    });
-                }
+            },
+            onSuccess: (filename) => {
+                Toast.show({
+                    type: 'success',
+                    text1: 'Upload Complete',
+                    text2: filename,
+                });
+            },
+            onError: (error) => {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Upload Failed',
+                    text2: error,
+                });
             }
-        } catch (error) {
-            console.error('Error picking document:', error);
-            Toast.show({
-                type: 'error',
-                text1: 'Error',
-                text2: 'Failed to select PDF',
-            });
-        }
+        });
     }
 
     return (
