@@ -1,8 +1,24 @@
 const IS_DEV = process.env.APP_VARIANT === 'development';
 
+const getName = () => {
+  if (IS_DEV) {
+    return "GM (dev)";
+  }
+
+  return "Game Master";
+}
+
+const getUniqueIdentifier = () => {
+  if (IS_DEV) {
+    return "com.zacharias3690.gmchatbotapp.dev";
+  }
+
+  return "com.zacharias3690.gmchatbotapp";
+}
+
 export default {
   "expo": {
-    "name": IS_DEV ? "GM (dev)" : "Game Master",
+    "name": getName(),
     "slug": "gm-chatbot-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -18,10 +34,10 @@ export default {
         "foregroundImage": "./assets/images/gmbot-adaptive-foreground.png",
         "backgroundColor": "#495E6A"
       },
-      "package": IS_DEV ? "com.zacharias3690.gmchatbotapp.dev" : "com.zacharias3690.gmchatbotapp"
+      "package": getUniqueIdentifier()
     },
     "ios": {
-      "bundleIdentifier": IS_DEV ? "com.zacharias3690.gmchatbotapp.dev" : "com.zacharias3690.gmchatbotapp"
+      "bundleIdentifier": getUniqueIdentifier()
     },
     "web": {
       "bundler": "metro",
@@ -37,6 +53,14 @@ export default {
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#495E6A"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
       ]
     ],
