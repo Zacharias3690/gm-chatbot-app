@@ -9,22 +9,13 @@
       "distribution": "internal",
       "env": {
         "APP_VARIANT": "development"
-      },
-      "android": {
-        "gradleCommand": ":app:assembleDevelopmentDebug"
       }
     },
     "preview": {
-      "distribution": "internal",
-      "android": {
-        "gradleCommand": ":app:assembleProductionRelease"
-      }
+      "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true,
-      "android": {
-        "gradleCommand": ":app:bundleProductionRelease"
-      }
+      "autoIncrement": true
     }
   },
   "submit": {

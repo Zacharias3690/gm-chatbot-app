@@ -20,6 +20,9 @@ export default {
       },
       "package": IS_DEV ? "com.zacharias3690.gmchatbotapp.dev" : "com.zacharias3690.gmchatbotapp"
     },
+    "ios": {
+      "bundleIdentifier": IS_DEV ? "com.zacharias3690.gmchatbotapp.dev" : "com.zacharias3690.gmchatbotapp"
+    },
     "web": {
       "bundler": "metro",
       "output": "static",
