@@ -17,62 +17,63 @@ const getUniqueIdentifier = () => {
 }
 
 export default {
-  "expo": {
-    "name": getName(),
-    "slug": "gm-chatbot-app",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "gmbot",
-    "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true
+  expo: {
+    name: getName(),
+    slug: "gm-chatbot-app",
+    version: "1.0.0",
+    orientation: "portrait",
+    icon: "./assets/images/icon.png",
+    scheme: "gmbot",
+    userInterfaceStyle: "automatic",
+    newArchEnabled: true,
+    ios: {
+      supportsTablet: true
     },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/images/gmbot-adaptive-foreground.png",
-        "backgroundColor": "#495E6A"
+    android: {
+      edgeToEdgeEnabled: true,
+      package: getUniqueIdentifier(),
+      adaptiveIcon: {
+        foregroundImage: "./assets/images/gmbot-adaptive-foreground.png",
+        backgroundColor: "#495E6A"
       },
-      "package": getUniqueIdentifier()
     },
-    "ios": {
-      "bundleIdentifier": getUniqueIdentifier()
+    ios: {
+      bundleIdentifier: getUniqueIdentifier()
     },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/gmbot-favicon.png"
+    web: {
+      bundler: "metro",
+      output: "static",
+      favicon: "./assets/images/gmbot-favicon.png"
     },
-    "plugins": [
+    plugins: [
       "expo-router",
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/gmbot-adaptive-foreground.png",
-          "imageWidth": 200,
-          "resizeMode": "contain",
-          "backgroundColor": "#495E6A"
+          image: "./assets/images/gmbot-adaptive-foreground.png",
+          imageWidth: 200,
+          resizeMode: "contain",
+          backgroundColor: "#495E6A"
         }
       ],
       [
         "expo-build-properties",
         {
-          "android": {
-            "usesCleartextTraffic": true
+          android: {
+            usesCleartextTraffic: true
           }
         }
       ]
     ],
-    "experiments": {
-      "typedRoutes": true
+    experiments: {
+      typedRoutes: true
     },
-    "extra": {
-      "router": {
-        "origin": false
+    extra: {
+      router: {
+        origin: false
       },
-      "eas": {
-        "projectId": "e2d07507-c422-4f94-b1c1-dace0d5263d5"
+      eas: {
+        projectId: "e2d07507-c422-4f94-b1c1-dace0d5263d5"
       }
     }
   }
