@@ -1,8 +1,8 @@
 import { FC } from "react";
-import { MessageAuthor, MessageT } from "@/app/hooks/useMessages";
+import { MessageAuthor, MessageT } from "@/lib/hooks/useMessages";
 import Markdown from "react-native-markdown-display";
 import { StyleSheet, Text, useColorScheme, View } from "react-native";
-import { useThemeColor } from "@/app/hooks/useThemeColor";
+import { useThemeColor } from "@/lib/hooks/useThemeColor";
 // @ts-expect-error
 import SyntaxHighlighter from "react-native-syntax-highlighter";
 import {

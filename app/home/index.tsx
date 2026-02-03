@@ -1,18 +1,18 @@
 import { ScrollView, View } from "react-native";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { generateGuid } from "@/app/helpers/generateGuid";
-import { MessageT, MessageAuthor, useMessages } from "@/app/hooks/useMessages";
+import { generateGuid } from "@/lib/helpers/generateGuid";
+import { MessageT, MessageAuthor, useMessages } from "@/lib/hooks/useMessages";
 import { io } from "socket.io-client";
-import ThemedButton from "@/app/components/common/ThemedButton";
-import Message from "@/app/components/Message/Message";
-import ThemedTextInput from "@/app/components/common/ThemedTextInput";
+import ThemedButton from "@/lib/components/common/ThemedButton";
+import Message from "@/lib/components/Message/Message";
+import ThemedTextInput from "@/lib/components/common/ThemedTextInput";
 import { Stack } from "expo-router";
 import Feather from "@expo/vector-icons/Feather";
 import { HeaderTitle } from "@react-navigation/elements";
-import { useThemeColor } from "@/app/hooks/useThemeColor";
+import { useThemeColor } from "@/lib/hooks/useThemeColor";
 import Toast from "react-native-toast-message";
-import { usePdfUpload } from "@/app/hooks/usePdfUpload";
-import ScreenWrapper from "@/app/components/common/ScreenWrapper";
+import { usePdfUpload } from "@/lib/hooks/usePdfUpload";
+import ScreenWrapper from "@/lib/components/common/ScreenWrapper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 function Home() {
@@ -26,7 +26,9 @@ function Home() {
   );
   const scrollView = useRef<ScrollView>(null);
   const headerText = useThemeColor("headerText");
+  const backgroundColor = useThemeColor("headerBackground");
   const [isConnected, setConnected] = useState(false);
+  const [status, setStatus] = useState<string>("");
   const { uploadPdf } = usePdfUpload();
   const insets = useSafeAreaInsets();
 
@@ -41,6 +43,10 @@ function Home() {
     socket.on("receive_message", (data: MessageT) => {
       upsertMessage(data.id, data.content, MessageAuthor.AI);
       scrollView.current?.scrollToEnd();
+    });
+
+    socket.on("receive_status", (data: string) => {
+      setStatus(data);
     });
 
     socket.on("disconnect", () => {
@@ -104,8 +110,6 @@ function Home() {
     });
   }
 
-  console.log(messages);
-
   return (
     <View
       style={{
@@ -117,9 +121,9 @@ function Home() {
       }}
     >
       <Stack.Screen
-        name="home"
         options={{
           headerTitle: "",
+          headerStyle: { backgroundColor: backgroundColor },
           headerLeft: () => {
             return (
               <View
@@ -182,7 +186,7 @@ function Home() {
         }}
       >
         <ThemedTextInput
-          placeholder={"Ask GMBot Anything"}
+          placeholder={"Ask the Game Master a question..."}
           value={text}
           onChangeText={(value) => setText(value)}
           onSubmitEditing={handleSubmit}

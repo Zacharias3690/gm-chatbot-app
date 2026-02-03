@@ -5,14 +5,13 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { useColorScheme } from "react-native";
-import { useThemeColor } from "@/app/hooks/useThemeColor";
+import { useThemeColor } from "@/lib/hooks/useThemeColor";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const backgroundColor = useThemeColor("headerBackground");
-  const textColor = useThemeColor("headerText");
 
   return (
     <SafeAreaProvider>
@@ -20,13 +19,12 @@ export default function RootLayout() {
         <StatusBar style="light" translucent={true} />
         <Stack
           screenOptions={{
-            headerTintColor: textColor,
-            headerStyle: {
-              backgroundColor,
-            },
-            contentStyle: { backgroundColor: "transparent" },
+            headerShown: true,
+            headerStyle: { backgroundColor: backgroundColor },
           }}
-        ></Stack>
+        >
+          <Stack.Screen name="home/index" options={{ title: "Game Master" }} />
+        </Stack>
       </ThemeProvider>
     </SafeAreaProvider>
   );

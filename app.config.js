@@ -31,6 +31,7 @@ export default {
     },
     android: {
       edgeToEdgeEnabled: true,
+      softwareKeyboardLayoutMode: "pan",
       package: getUniqueIdentifier(),
       adaptiveIcon: {
         foregroundImage: "./assets/images/gmbot-adaptive-foreground.png",
