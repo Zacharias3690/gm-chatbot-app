@@ -38,13 +38,13 @@ function Home() {
   const socket = useMemo(
     () =>
       // Server
-      // io("ws://64.23.133.29", { transports: ["websocket"], query: { b64: 1 } }),
+      io("ws://64.23.133.29", { transports: ["websocket"], query: { b64: 1 } }),
 
-      // Localhost
-      io("ws://5174-207-96-67-71.ngrok-free.app", {
-        transports: ["websocket"],
-        query: { b64: 1 },
-      }),
+    // Localhost
+    // io("ws://5174-207-96-67-71.ngrok-free.app", {
+    //   transports: ["websocket"],
+    //   query: { b64: 1 },
+    // }),
     []
   );
   const scrollView = useRef<ScrollView>(null);
