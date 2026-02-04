@@ -1,7 +1,7 @@
 import { StyleSheet, TextInput, TextInputProps } from "react-native";
 import { useThemeColor } from "@/lib/hooks/useThemeColor";
 
-const ThemedTextInput = (props: TextInputProps) => {
+const ThemedTextInput = ({ style: propStyle, ...props }: TextInputProps) => {
   const textColor = useThemeColor("text");
   const borderColor = useThemeColor("border");
   const placeholderColor = useThemeColor("placeholderText");
@@ -10,11 +10,14 @@ const ThemedTextInput = (props: TextInputProps) => {
     <TextInput
       {...props}
       placeholderTextColor={placeholderColor}
-      style={{
-        ...styles.textInput,
-        color: textColor,
-        borderColor: borderColor,
-      }}
+      style={[
+        styles.textInput,
+        {
+          color: textColor,
+          borderColor: borderColor,
+        },
+        propStyle,
+      ]}
     />
   );
 };

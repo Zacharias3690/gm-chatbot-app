@@ -1,4 +1,4 @@
-const IS_DEV = process.env.APP_VARIANT === 'development';
+const IS_DEV = process.env.APP_ENVIRONMENT === 'development';
 
 const getName = () => {
   if (IS_DEV) {
@@ -31,7 +31,7 @@ export default {
     },
     android: {
       edgeToEdgeEnabled: true,
-      softwareKeyboardLayoutMode: "pan",
+      softwareKeyboardLayoutMode: "adjustNothing",
       package: getUniqueIdentifier(),
       adaptiveIcon: {
         foregroundImage: "./assets/images/gmbot-adaptive-foreground.png",

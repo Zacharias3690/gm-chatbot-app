@@ -1,4 +1,5 @@
-import { ScrollView, View, Text, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, ScrollView } from "react-native";
+import { KeyboardAvoidingView } from "react-native-keyboard-controller";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { generateGuid } from "@/lib/helpers/generateGuid";
 import { MessageT, MessageAuthor, useMessages } from "@/lib/hooks/useMessages";
@@ -49,7 +50,8 @@ function Home() {
   );
   const scrollView = useRef<ScrollView>(null);
   const headerText = useThemeColor("headerText");
-  const backgroundColor = useThemeColor("headerBackground");
+  const headerBackgroundColor = useThemeColor("headerBackground");
+  const messageBackground = useThemeColor("messageBackground");
   const [isConnected, setConnected] = useState(false);
   const [status, setStatus] = useState<ChatbotStatus | null>(null);
   const { uploadPdf } = usePdfUpload();
@@ -201,29 +203,28 @@ function Home() {
   }
 
   return (
-    <View
+    <KeyboardAvoidingView
+      behavior="padding"
+      keyboardVerticalOffset={insets.top + 16}
       style={{
         flex: 1,
-        flexDirection: "column",
-        justifyContent: "flex-end",
         paddingLeft: insets.left,
         paddingRight: insets.right,
+        backgroundColor: messageBackground,
+        flexDirection: "column",
+        justifyContent: "flex-end",
       }}
     >
       <Stack.Screen
         options={{
           headerTitle: "",
-          headerStyle: { backgroundColor: backgroundColor },
+          headerStyle: { backgroundColor: headerBackgroundColor },
           headerLeft: () => {
             return (
               <View
                 style={{
                   flexDirection: "row",
                   alignItems: "center",
-                  paddingTop: insets.top + 16,
-                  paddingLeft: insets.left,
-                  paddingRight: insets.right,
-                  paddingBottom: 16,
                 }}
               >
                 <HeaderTitle style={{ color: headerText }}>
@@ -235,35 +236,27 @@ function Home() {
                     height: 12,
                     marginLeft: 8,
                     backgroundColor: isConnected ? "green" : "red",
-                    borderRadius: "50%",
+                    borderRadius: 6,
                   }}
                 />
               </View>
             );
           },
           headerRight: () => (
-            <View
-              style={{
-                paddingTop: insets.top + 16,
-                paddingRight: insets.right,
-                paddingBottom: 16,
-              }}
-            >
-              <Feather.Button
-                name={"edit"}
-                backgroundColor={"transparent"}
-                onPressOut={resetConversation}
-              />
-            </View>
+            <Feather.Button
+              name={"edit"}
+              backgroundColor={"transparent"}
+              onPressOut={resetConversation}
+            />
           ),
         }}
       />
 
       <ScrollView
-        style={{
-          flexGrow: 1,
+        style={{ flex: 1 }}
+        contentContainerStyle={{
           paddingTop: 16,
-          paddingBottom: 32,
+          paddingBottom: 16,
         }}
         ref={scrollView}
       >
@@ -306,9 +299,10 @@ function Home() {
       <View
         style={{
           flexDirection: "row",
-          margin: 16,
-          marginBottom: Math.max(24, insets.bottom + 8),
           alignItems: "center",
+          padding: 16,
+          paddingBottom: Math.max(24, insets.bottom + 8),
+          backgroundColor: messageBackground,
         }}
       >
         <ThemedTextInput
@@ -327,8 +321,9 @@ function Home() {
           <ThemedButton onPress={handleSubmit}>Send</ThemedButton>
         </View>
       </View>
+
       <Toast />
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

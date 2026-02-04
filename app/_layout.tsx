@@ -8,6 +8,7 @@ import { useColorScheme } from "react-native";
 import { useThemeColor } from "@/lib/hooks/useThemeColor";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -15,17 +16,25 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <StatusBar style="light" translucent={true} />
-        <Stack
-          screenOptions={{
-            headerShown: true,
-            headerStyle: { backgroundColor: backgroundColor },
-          }}
+      <KeyboardProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Stack.Screen name="home/index" options={{ title: "Game Master" }} />
-        </Stack>
-      </ThemeProvider>
+          <StatusBar style="light" translucent={true} />
+          <Stack
+            screenOptions={{
+              headerShown: true,
+              headerStyle: { backgroundColor: backgroundColor },
+            }}
+          >
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="home/index"
+              options={{ title: "Game Master" }}
+            />
+          </Stack>
+        </ThemeProvider>
+      </KeyboardProvider>
     </SafeAreaProvider>
   );
 }
