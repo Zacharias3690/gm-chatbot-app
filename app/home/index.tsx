@@ -1,5 +1,5 @@
-import { ScrollView, View } from "react-native";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { ScrollView, View, Text, ActivityIndicator } from "react-native";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { generateGuid } from "@/lib/helpers/generateGuid";
 import { MessageT, MessageAuthor, useMessages } from "@/lib/hooks/useMessages";
 import { io } from "socket.io-client";
@@ -12,25 +12,75 @@ import { HeaderTitle } from "@react-navigation/elements";
 import { useThemeColor } from "@/lib/hooks/useThemeColor";
 import Toast from "react-native-toast-message";
 import { usePdfUpload } from "@/lib/hooks/usePdfUpload";
-import ScreenWrapper from "@/lib/components/common/ScreenWrapper";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  ChatbotStatus,
+  getRandomStatusMessage,
+  isVisibleStatus,
+  type StatusT,
+} from "@/lib/constants/Status";
+
+type PendingRequest = {
+  id: string;
+  query: string;
+  chatId: string;
+  timestamp: number;
+} | null;
+
+const REQUEST_TIMEOUT_MS = 60000; // 60 seconds
 
 function Home() {
   const [text, setText] = useState<string>("");
   const { messages, upsertMessage, clearMessages } = useMessages();
   const [chatId, setChatId] = useState<string>();
+  const [pendingRequest, setPendingRequest] = useState<PendingRequest>(null);
+  const pendingRequestRef = useRef<PendingRequest>(null);
   const socket = useMemo(
     () =>
-      io("ws://64.23.133.29", { transports: ["websocket"], query: { b64: 1 } }),
+      // Server
+      // io("ws://64.23.133.29", { transports: ["websocket"], query: { b64: 1 } }),
+
+      // Localhost
+      io("ws://5174-207-96-67-71.ngrok-free.app", {
+        transports: ["websocket"],
+        query: { b64: 1 },
+      }),
     []
   );
   const scrollView = useRef<ScrollView>(null);
   const headerText = useThemeColor("headerText");
   const backgroundColor = useThemeColor("headerBackground");
   const [isConnected, setConnected] = useState(false);
-  const [status, setStatus] = useState<string>("");
+  const [status, setStatus] = useState<ChatbotStatus | null>(null);
   const { uploadPdf } = usePdfUpload();
   const insets = useSafeAreaInsets();
+
+  // Keep ref in sync for use in socket handlers
+  useEffect(() => {
+    pendingRequestRef.current = pendingRequest;
+  }, [pendingRequest]);
+
+  const retryPendingRequest = useCallback(() => {
+    const pending = pendingRequestRef.current;
+    if (!pending) return;
+
+    const elapsed = Date.now() - pending.timestamp;
+    if (elapsed < REQUEST_TIMEOUT_MS) {
+      console.log("Retrying pending request:", pending.id);
+      socket.emit("json", {
+        event: "chatbot_request",
+        request_id: pending.id,
+        data: {
+          chat_id: pending.chatId,
+          query: pending.query,
+        },
+      });
+    } else {
+      // Request timed out, clear it
+      setPendingRequest(null);
+      setStatus(null);
+    }
+  }, [socket]);
 
   useEffect(() => {
     resetConversation();
@@ -38,6 +88,12 @@ function Home() {
     socket.on("connect", () => {
       console.log("Connected to server");
       setConnected(true);
+      // Retry pending request on reconnect
+      retryPendingRequest();
+    });
+
+    socket.on("request_acknowledged", (data: { request_id: string }) => {
+      console.log("Request acknowledged:", data.request_id);
     });
 
     socket.on("receive_message", (data: MessageT) => {
@@ -45,9 +101,30 @@ function Home() {
       scrollView.current?.scrollToEnd();
     });
 
-    socket.on("receive_status", (data: string) => {
-      setStatus(data);
+    socket.on("receive_status", (data: StatusT) => {
+      console.log("Received status", data);
+      setStatus(data.status);
     });
+
+    socket.on("request_complete", (data: { request_id: string }) => {
+      console.log("Request complete:", data.request_id);
+      setPendingRequest(null);
+      setStatus(null);
+    });
+
+    socket.on(
+      "request_error",
+      (data: { request_id: string; error: string }) => {
+        console.error("Request error:", data.error);
+        setPendingRequest(null);
+        setStatus(null);
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: data.error,
+        });
+      }
+    );
 
     socket.on("disconnect", () => {
       console.log("Disconnected from server");
@@ -72,10 +149,20 @@ function Home() {
   }
 
   function handleSubmit() {
+    const requestId = generateGuid();
+    const request: PendingRequest = {
+      id: requestId,
+      query: text,
+      chatId: chatId!,
+      timestamp: Date.now(),
+    };
+
+    setPendingRequest(request);
     upsertMessage(generateGuid(), text, MessageAuthor.Human);
     scrollView.current?.scrollToEnd();
     socket.emit("json", {
       event: "chatbot_request",
+      request_id: requestId,
       data: {
         chat_id: chatId,
         query: text,
@@ -176,7 +263,31 @@ function Home() {
         {messages.map((message) => (
           <Message key={message.id} message={message} />
         ))}
+
+        {status && isVisibleStatus(status) && (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              paddingHorizontal: 16,
+              paddingVertical: 8,
+              gap: 8,
+            }}
+          >
+            <ActivityIndicator size="small" color="#888" />
+            <Text
+              style={{
+                color: "#888",
+                fontStyle: "italic",
+                fontSize: 14,
+              }}
+            >
+              {getRandomStatusMessage(status)}
+            </Text>
+          </View>
+        )}
       </ScrollView>
+
       <View
         style={{
           flexDirection: "row",
