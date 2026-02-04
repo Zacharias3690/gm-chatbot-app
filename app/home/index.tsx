@@ -54,6 +54,9 @@ function Home() {
   const [status, setStatus] = useState<ChatbotStatus | null>(null);
   const { uploadPdf } = usePdfUpload();
   const insets = useSafeAreaInsets();
+  const statusMessage = useMemo(() => {
+    return status ? getRandomStatusMessage(status) : null;
+  }, [status]);
 
   // Keep ref in sync for use in socket handlers
   useEffect(() => {
@@ -257,11 +260,22 @@ function Home() {
       />
 
       <ScrollView
-        style={{ flexGrow: 1, paddingTop: 16, paddingBottom: 16 }}
+        style={{
+          flexGrow: 1,
+          paddingTop: 16,
+          paddingBottom: 32,
+        }}
         ref={scrollView}
       >
         {messages.map((message) => (
-          <Message key={message.id} message={message} />
+          <Message
+            key={message.id}
+            message={{
+              id: message.id,
+              content: message.content,
+              author: message.author,
+            }}
+          />
         ))}
 
         {status && isVisibleStatus(status) && (
@@ -272,6 +286,7 @@ function Home() {
               paddingHorizontal: 16,
               paddingVertical: 8,
               gap: 8,
+              marginBottom: 16,
             }}
           >
             <ActivityIndicator size="small" color="#888" />
@@ -282,7 +297,7 @@ function Home() {
                 fontSize: 14,
               }}
             >
-              {getRandomStatusMessage(status)}
+              {statusMessage}
             </Text>
           </View>
         )}
@@ -300,6 +315,8 @@ function Home() {
           placeholder={"Ask the Game Master a question..."}
           value={text}
           onChangeText={(value) => setText(value)}
+          multiline={true}
+          numberOfLines={6}
           onSubmitEditing={handleSubmit}
         />
 
